@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Base64 Test</title>
+    <script src="base64.js"></script>
+  </head>
+  <output id="output"></output>
+  <body>
+    <script>
+
+function stringToBytes(string) {
+  return string.split('').map(
+      function(s) {
+        return s.charCodeAt(0);
+      });
+}
+
+var testData = {};
+testData.string = testData.decoded = 'ArunjitSingh';
+testData.buffer = new Uint8Array(stringToBytes(testData.string)).buffer;
+testData.encoded = btoa(testData.string);
+
+
+var encoded1 = base64.encode(testData.string, true);
+var encoded2 = base64.encode(testData.buffer, true);
+
+console.assert(encoded1 === encoded2,
+              'String and Buffer should be encoded the same');
+console.assert(encoded1 === testData.encoded, 'Encoding should work');
+
+
+var decoded = base64.decode(testData.encoded, true);
+
+console.assert(decoded === testData.decoded, 'Decoding should work');
+
+    </script>
+  </body>
+</html>
