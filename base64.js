@@ -49,71 +49,77 @@
     var outlen = Math.ceil(len * 4 / 3);
     outlen += (outlen % 4) ? (4 - outlen % 4) : 0;
     var buffer = new ArrayBuffer(outlen);
-    var base64 = new Uint8Array(buffer), j = 0;
+    var b64 = new Uint8Array(buffer), j = 0;
     while (i < len) {
-      var curr = [];
-      var outs = [];
+      var c1, c2, c3, h2, h3;
+      var e1, e2, e3, e4;
 
-      curr[0] = bytes[i++];
-      curr[1] = bytes[i++];
-      curr[2] = bytes[i++];
+      c1 = bytes[i++];
+      h2 = i < len;
+      c2 = h2 ? bytes[i++] : 0;
+      h3 = i < len
+      c3 = h3 ? bytes[i++] : 0;
 
-      outs[0] = curr[0] >>> 2;
-      outs[1] = ((curr[0] & 0x03) << 4) | (curr[1] >>> 4);
-      outs[2] = ((curr[1] & 0x0f) << 2) | (curr[2] >>> 6);
-      outs[3] = curr[2] & 0x3f;
+      e1 = c1 >>> 2;
+      e2 = ((c1 & 0x03) << 4) | (c2 >>> 4);
+      e3 = ((c2 & 0x0f) << 2) | (c3 >>> 6);
+      e4 = c3 & 0x3f;
 
-      if (typeof curr[1] === 'undefined') {
-        outs[3] = outs[2] = 64;
-      } else if (typeof curr[2] === 'undefined') {
-        outs[3] = 64;
+      if (!h2) {
+        e4 = e3 = 64;
+      } else  if (!h3) {
+        e4 = 64;
       }
-
-      base64[j++] = KEY.charCodeAt(outs[0]);
-      base64[j++] = KEY.charCodeAt(outs[1]);
-      base64[j++] = KEY.charCodeAt(outs[2]);
-      base64[j++] = KEY.charCodeAt(outs[3]);
+      b64[j++] = KEY.charCodeAt(e1);
+      b64[j++] = KEY.charCodeAt(e2);
+      b64[j++] = KEY.charCodeAt(e3);
+      b64[j++] = KEY.charCodeAt(e4);
     }
-    return asString ? bytesToString(base64) : base64.buffer;
+    return asString ? bytesToString(b64) : b64.buffer;
   };
 
   /**
    * Decode a base64 encoded string.
-   * @param {Array|ArrayBuffer|String} base64 The base64 encoded string.
+   * @param {Array|ArrayBuffer|String} b64 The base64 encoded string.
    * @param {boolean} asString Whether to return as string.
    * @return {ArrayBuffer|String} An array of decoded bytes.
    */
-  ns.base64.decode = function decode(base64, asString) {
-    if (((base64.byteLength || base64.length) & 0x03) !== 0) {
+  ns.base64.decode = function decode(b64, asString) {
+    if (((b64.byteLength || b64.length) & 0x03) !== 0) {
       throw new TypeError('Invalid base64 string (input:argument[0])');
     }
-    if ('string' === typeof base64) {
-      base64 = stringToBytes(base64);
-    } else if (base64 instanceof ArrayBuffer) {
-      base64 = new Uint8Array(base64);
+    if ('string' === typeof b64) {
+      b64 = stringToBytes(b64);
+    } else if (b64 instanceof ArrayBuffer) {
+      b64 = new Uint8Array(b64);
     }
-    var len = base64.length, i = 0;
+    var len = b64.length, i = 0;
     var outlen = Math.ceil(len * 3 / 4);  // Math.ceil isn't really required.
+    if (b64[len - 2] === 61) {
+      outlen -= 2;
+    } else if (b64[len - 1] === 61) {
+      outlen -= 1;
+    }
     var buffer = new ArrayBuffer(outlen);
     var bytes = new Uint8Array(buffer), j = 0;
     while (i < len) {
-      var curr = [];
-      var outs = [];
+      var c1, c2, c3, c4;
+      var d1, d2, d3;
 
-      curr[0] = KEY.indexOf(String.fromCharCode(base64[i++]));
-      curr[1] = KEY.indexOf(String.fromCharCode(base64[i++]));
-      curr[2] = KEY.indexOf(String.fromCharCode(base64[i++]));
-      curr[3] = KEY.indexOf(String.fromCharCode(base64[i++]));
+      c1 = KEY.indexOf(String.fromCharCode(b64[i++]));
+      c2 = KEY.indexOf(String.fromCharCode(b64[i++]));
+      c3 = KEY.indexOf(String.fromCharCode(b64[i++]));
+      c4 = KEY.indexOf(String.fromCharCode(b64[i++]));
 
-      outs[0] = (curr[0] << 2) | (curr[1] >>> 4);
-      outs[1] = ((curr[1] & 0x0f) << 4) | (curr[2] >>> 2);
-      outs[2] = ((curr[2] & 0x03) << 6) | curr[3];
+      d1 = (c1 << 2) | (c2 >>> 4);
+      d2 = ((c2 & 0x0f) << 4) | (c3 >>> 2);
+      d3 = ((c3 & 0x03) << 6) | c4;
 
-      bytes[j++] = outs[0];
-      if (curr[2] !== 64) {
-        bytes[j++] = outs[1];
-        if (curr[3] !== 64) {
-          bytes[j++] = outs[2];
+      bytes[j++] = d1;
+      if (c3 !== 64) {
+        bytes[j++] = d2;
+        if (c4 !== 64) {
+          bytes[j++] = d3;
         }
       }
     }

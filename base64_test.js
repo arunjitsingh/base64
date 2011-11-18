@@ -3,7 +3,7 @@ var vows = require('vows'),
   assert = require('assert');
 
 var testData = {};
-testData.string = testData.decoded = 'ArunjitSingh';
+testData.string = testData.decoded = 'Hello!!';
 testData.buffer = new Buffer(testData.string);
 testData.encoded = testData.buffer.toString('base64');
 
@@ -39,7 +39,9 @@ decodeSuite.addBatch({
   'decoding invalid base64': {
     topic: 'Q==',
     'should error': function(topic) {
-      assert.throws(base64.decode(topic, true));
+      assert.throws(function() {
+        base64.decode(topic, true)
+      }, TypeError);
     }
   }
 });
