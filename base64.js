@@ -1,13 +1,17 @@
+// Copyright 2011 Arunjit Singh. All Rights Reserved.
 /**
  * @fileoverview Base64 encoder and decoder for JavaScript.
  * @author Arunjit Singh <arunjit@me.com>
- * @copyright Copyright 2011 Arunjit Singh. All Rights Reserved.
  * @license MIT license. This notice must be included in all distributions.
  *     @see //LICENSE for details.
  *     @see http://www.opensource.org/licenses/mit-license.php for details.
  */
+/**
+ * Namespace to avoid global collisions.
+ * @this The global object (window or module.exports).
+ */
 (function(ns) {
-  ns.base64 = ns.base64 || {};
+  ns['base64'] = ns.base64 || {};
 
   function stringToBytes(string) {
     var len = string.length;
@@ -39,7 +43,7 @@
    * @param {boolean} asString Whether to return as a string.
    * @return {ArrayBuffer|String} A Base64 encoded array buffer or string.
    */
-  ns.base64.encode = function encode(bytes, asString) {
+  ns.base64['encode'] = function encode(bytes, asString) {
     if ('string' === typeof bytes) {
       bytes = stringToBytes(bytes);
     } else if (bytes instanceof ArrayBuffer) {
@@ -84,7 +88,7 @@
    * @param {boolean} asString Whether to return as string.
    * @return {ArrayBuffer|String} An array of decoded bytes.
    */
-  ns.base64.decode = function decode(b64, asString) {
+  ns.base64['decode'] = function decode(b64, asString) {
     if (((b64.byteLength || b64.length) & 0x03) !== 0) {
       throw new TypeError('Invalid base64 string (input:argument[0])');
     }

@@ -1,3 +1,11 @@
+// Copyright 2011 Arunjit Singh. All Rights Reserved.
+/**
+ * @fileoverview NodeJS test for base64 encoder and decoder.
+ * @author Arunjit Singh <arunjit@me.com>
+ * @license MIT license. This notice must be included in all distributions.
+ *     @see //LICENSE for details.
+ *     @see http://www.opensource.org/licenses/mit-license.php for details.
+ */
 var base64 = require('./base64').base64;
 var vows = require('vows'),
   assert = require('assert');
