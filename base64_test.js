@@ -48,7 +48,7 @@ decodeSuite.addBatch({
     topic: 'Q==',
     'should error': function(topic) {
       assert.throws(function() {
-        base64.decode(topic, true)
+        base64.decode(topic, true);
       }, TypeError);
     }
   }
