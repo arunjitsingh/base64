@@ -16,11 +16,11 @@ registerTestSuite(Base64Test);
 
 Base64Test.prototype.encodeAString = function() {
   var actual = base64.encode(this.rawString_, true);
-  assertEq(actual.length % 4, 0);
-  expectEq(actual, this.encodedString_);
+  expectThat(actual.length % 4, equals(0));
+  expectThat(actual, equals(this.encodedString_));
 };
 
 Base64Test.prototype.decodeAString = function() {
   var actual = base64.decode(this.encodedString_, true);
-  expectEq(actual, this.decodedString_);
+  expectThat(actual, equals(this.decodedString_));
 };
