@@ -1,4 +1,4 @@
-// Copyright 2011 Arunjit Singh. All Rights Reserved.
+// Copyright 2012 Arunjit Singh. All Rights Reserved.
 /**
  * @fileoverview Base64 encoder and decoder for JavaScript.
  * @author Arunjit Singh <arunjit@me.com>
